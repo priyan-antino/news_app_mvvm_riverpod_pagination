@@ -36,7 +36,7 @@ class NewsNotifier extends StateNotifier<ApiResponseState<List<dynamic>>> {
       final response = await http.get(Uri.parse(url));
       final body = json.decode(response.body);
       if (_articles.length >= 14) {
-        state = ApiResponseState.failed("TEST ERROR");
+        state = ApiResponseState.data(_articles, true);
         return;
       }
       _articles.addAll(body['articles']);
@@ -48,9 +48,15 @@ class NewsNotifier extends StateNotifier<ApiResponseState<List<dynamic>>> {
       _page++;
       print("Number of articles are ${_articles.length}");
 
-      _articles.isNotEmpty ? state = ApiResponseState.data(_articles) : null;
+      _articles.isNotEmpty
+          ? state = ApiResponseState.data(_articles, false)
+          : null;
     } catch (e) {
-      state = ApiResponseState.failed(e.toString());
+      if (_articles.isNotEmpty) {
+        state = ApiResponseState.data(_articles, true);
+      } else {
+        state = ApiResponseState.failed(e.toString());
+      }
     }
   }
 }

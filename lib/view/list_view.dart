@@ -31,7 +31,11 @@ class NewsList extends StatelessWidget {
                       notification.metrics.extentAfter == 0) {
                     // User has reached the end of the list
                     // Load more data or trigger pagination in flutter
-                    ref.read(newsProvider.notifier).fetchArticles();
+                    if (ref.read(newsProvider).hasPartialerror == true) {
+                      return false;
+                    } else {
+                      ref.read(newsProvider.notifier).fetchArticles();
+                    }
                   }
                   return false;
                 },
@@ -43,15 +47,36 @@ class NewsList extends StatelessWidget {
                     if (index < ref.read(newsProvider).data.length) {
                       final title = article[index]["title"] ?? 'No Title';
 
-                      return Container(
-                          margin: const EdgeInsets.all(40),
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(border: Border.all()),
-                          child: Text(title));
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+                      return Card(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                        elevation: 10,
+                        child: Container(
+                            margin: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
+                            // decoration: BoxDecoration(border: Border.all()),
+                            child: Text(
+                              title,
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500),
+                            )),
                       );
+                    } else {
+                      return ref.read(newsProvider).hasPartialerror == true
+                          ? Center(
+                              child: Container(
+                                margin: const EdgeInsets.all(20),
+                                child: const Text(
+                                  "Failed to load more articles.\nPlease check back later...",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                            )
+                          : const Center(
+                              child: CircularProgressIndicator(),
+                            );
                     }
                   },
                 ),

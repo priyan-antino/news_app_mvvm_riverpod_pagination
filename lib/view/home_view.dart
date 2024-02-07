@@ -14,16 +14,49 @@ class HomeScreen extends ConsumerWidget {
       await ref.read(newsProvider.notifier).fetchArticles();
     }
 
-    return Scaffold(
-      body: Column(
-        children: [
-          const Expanded(child: NewsList()),
-          ref.watch(newsProvider).status == Status.FAILED
-              ? Container(
-                  child: Text(ref.read(newsProvider).message.toString()),
-                )
-              : Container(),
-        ],
+    return const Scaffold(
+      body: Padding(
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "The Hindu",
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Icon(
+                      Icons.newspaper,
+                      size: 50,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              "Breaking news for today....",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+            ),
+            Divider(
+              color: Colors.black,
+              // indent: 50,
+            ),
+            Expanded(child: NewsList()),
+          ],
+        ),
       ),
     );
   }
